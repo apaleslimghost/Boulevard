@@ -49,7 +49,7 @@ function handleAndFold(args, addParams, results) {
 	for(let {value, params} of arrayIter(results)) {
 		for(let handler of arrayIter(value)) {
 			let result = resultToOption(
-				handler(...addParams(params, args))
+				handler(...addParams(params.toJSON(), args))
 			);
 
 			if(result instanceof Some) {
@@ -77,10 +77,11 @@ var route_ = curry(function route_$(addParams, fourOhFour, map) {
 
 function fourOhFour$(req, res) {
 	res.statusCode = 404;
+	res.end();
 }
 
 function addParams$(params, args) {
-	return args.concat(params.toJSON());
+	return args.concat(params);
 }
 
 var with404 = route_(addParams$);
