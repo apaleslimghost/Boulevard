@@ -55,6 +55,30 @@ route({
 
 If no routes match, a 404 handler is called. The default handler works with `http.createServer`; it sets the `statusCode` to `404` and sends an empty response.
 
+Adding routes post-facto
+---
+The router function returned by Boulevard has an `add` method, which merges in a new map of routes:
+
+```javascript
+var routes = route({
+	'/': function() {
+		return 'foo';
+	}
+});
+
+routes({url: '/'}) //⇒ 'foo'
+routes({url: '/bar'}) //⇒ 404
+
+routes.add({
+	'/bar': function() {
+		return 'baz';
+	}
+});
+
+routes({url: '/'}) //⇒ 'foo'
+routes({url: '/bar'}) //⇒ 'baz'
+```
+
 Overriding default behaviour
 ---
 As well as the default router, `boulevard` exports functions that allow you to override various parts of default behaviour. They each take functions to override and return a version of the router with the new behaviour.

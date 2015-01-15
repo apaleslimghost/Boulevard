@@ -62,17 +62,25 @@ function handleAndFold(args, addParams, results) {
 
 var route_ = curry(function route_$(addParams, fourOhFour, map) {
 	var trie = compile(map);
-	return function(...args) {
+	var currentTrie = trie;
+	function handle$(...args) {
 		var [req] = args;
 		return handleAndFold(
 			args,
 			addParams,
-			trie.lookup(urlToPath(req.url))
+			currentTrie.lookup(urlToPath(req.url))
 		).fold(
 			(a) => a,
 			()  => fourOhFour(...args)
 		);
+	}
+
+	handle$.add = function(moreRoutes) {
+		var newTrie = compile(moreRoutes);
+		currentTrie = currentTrie.merge(newTrie);
 	};
+
+	return handle$;
 });
 
 function fourOhFour$(req, res) {
