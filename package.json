@@ -1,0 +1,40 @@
+{
+  "name": "boulevard",
+  "version": "1.0.0",
+  "description": "Handler-agnostic url routing",
+  "main": "lib",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quarterto/Boulevard.git"
+  },
+  "keywords": [
+    "router",
+    "livewire",
+    "gusto",
+    "url",
+    "http"
+  ],
+  "author": "Matt Brennan <matt@153.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quarterto/Boulevard/issues"
+  },
+  "homepage": "https://github.com/quarterto/Boulevard",
+  "dependencies": {
+    "curry": "^1.2.0",
+    "es6-symbol": "^0.1.1",
+    "fantasy-options": "git://github.com/fantasyland/fantasy-options",
+    "immutable": "^3.6.2",
+    "param-trie": "^1.0.0"
+  },
+  "devDependencies": {
+    "6to5": "^2.12.5",
+    "expect.js": "^0.3.1",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2",
+    "sinon-expect": "^0.2.0"
+  }
+}
