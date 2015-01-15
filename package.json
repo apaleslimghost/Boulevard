@@ -31,10 +31,6 @@
     "param-trie": "^1.0.0"
   },
   "devDependencies": {
-    "6to5": "^2.12.5",
-    "expect.js": "^0.3.1",
-    "mocha": "^2.1.0",
-    "sinon": "^1.12.2",
-    "sinon-expect": "^0.2.0"
+    "6to5": "^2.12.5"
   }
 }
