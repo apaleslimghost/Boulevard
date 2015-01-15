@@ -49,7 +49,7 @@ function handleAndFold(args, addParams, results) {
 	for(let {value, params} of arrayIter(results)) {
 		for(let handler of arrayIter(value)) {
 			let result = resultToOption(
-				handler.apply(null, addParams(params, args))
+				handler(...addParams(params, args))
 			);
 
 			if(result instanceof Some) {
@@ -62,14 +62,15 @@ function handleAndFold(args, addParams, results) {
 
 var route_ = curry(function route_$(addParams, fourOhFour, map) {
 	var trie = compile(map);
-	return function(req) {
+	return function(...args) {
+		var [req] = args;
 		return handleAndFold(
-			arguments,
+			args,
 			addParams,
 			trie.lookup(urlToPath(req.url))
 		).fold(
 			(a) => a,
-			()  => fourOhFour.apply(null, arguments)
+			()  => fourOhFour(...args)
 		);
 	};
 });
@@ -79,7 +80,7 @@ function fourOhFour$(req, res) {
 }
 
 function addParams$(params, args) {
-	return [].slice.call(args).concat(params.toJSON());
+	return args.concat(params.toJSON());
 }
 
 var with404 = route_(addParams$);
