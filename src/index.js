@@ -3,6 +3,8 @@ var μ = require('immutable');
 var Option = require('fantasy-options');
 var curry = require('curry');
 var Symbol = require('es6-symbol');
+var defaults = require('defaults');
+var pascalCase = require('pascal-case');
 
 var {Some, None} = Option;
 var {Param, Branch} = ParamBranch;
@@ -83,7 +85,17 @@ function handleAndFold(args, addParams, results) {
 	return None;
 }
 
-var route_ = curry(function route_$(addParams, fourOhFour, map) {
+var defaultFuncs = {
+	fourOhFour: fourOhFour$,
+	addParams:  addParams$
+};
+
+var route_ = curry(function route_$(options, map) {
+	var {
+		fourOhFour,
+		addParams
+	} = defaults(options, defaultFuncs);
+
 	var trie = compileAll(map);
 	var currentTrie = trie;
 	function handle$(...args) {
@@ -115,10 +127,19 @@ function addParams$(params, args) {
 	return args.concat(params);
 }
 
-var with404 = route_(addParams$);
-var withParamHandler = (handler) => route_(handler, fourOhFour$);
 
-module.exports = with404(fourOhFour$);
-module.exports.withParamHandler = withParamHandler;
-module.exports.with404 = with404;
+module.exports = route_({});
+
+for(var prop in defaultFuncs) {
+	module.exports['with' + pascalCase(prop)] = curry((fn, map) => {
+		return route_({
+			[prop]: fn
+		}, map);
+	});
+}
+
+// 1.0 backwards compat
+module.exports.with404 = module.exports.withFourOhFour;
+module.exports.withParamHandler = module.exports.withAddParams;
+
 module.exports.route_ = route_;

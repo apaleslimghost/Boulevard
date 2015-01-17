@@ -25,10 +25,12 @@
   "homepage": "https://github.com/quarterto/Boulevard",
   "dependencies": {
     "curry": "^1.2.0",
+    "defaults": "^1.0.0",
     "es6-symbol": "^0.1.1",
     "fantasy-options": "git://github.com/fantasyland/fantasy-options",
     "immutable": "^3.6.2",
-    "param-trie": "^1.0.0"
+    "param-trie": "^1.0.0",
+    "pascal-case": "^1.1.0"
   },
   "devDependencies": {
     "6to5": "^2.12.5"
