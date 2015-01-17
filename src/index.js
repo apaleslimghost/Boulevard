@@ -34,8 +34,31 @@ function toParamBranch(url) {
 	});
 }
 
+var chain = (xs, f) => xs.reduce(
+	(ys, x) => ys.concat(f(x)),
+	[]
+);
+
+var toPairs = (map) => Array.isArray(map)? chain(map, toPairs)
+                     : /* otherwise */     μ.Map(map).entrySeq().toJS();
+
+var groupPairsUniq = (pairs) => pairs.reduce(
+	(groups, [k, v]) => {
+		var i = groups.findIndex((m) => !m.has(k));
+		return groups.setIn([i >= 0 ? i : groups.size, k], v);
+	},
+	μ.List()
+);
+
+function compileAll(maps) {
+	return groupPairsUniq(toPairs(maps)).map(compile).reduce(
+		(a, b) => a.merge(b),
+		ParamTrie.empty()
+	);
+}
+
 function compile(map) {
-	return ParamTrie.fromMap(μ.Map(map).mapKeys(toParamBranch));
+	return ParamTrie.fromMap(map.mapKeys(toParamBranch));
 }
 
 function resultToOption(result) {
@@ -61,7 +84,7 @@ function handleAndFold(args, addParams, results) {
 }
 
 var route_ = curry(function route_$(addParams, fourOhFour, map) {
-	var trie = compile(map);
+	var trie = compileAll(map);
 	var currentTrie = trie;
 	function handle$(...args) {
 		var [req] = args;
@@ -76,7 +99,7 @@ var route_ = curry(function route_$(addParams, fourOhFour, map) {
 	}
 
 	handle$.add = function(moreRoutes) {
-		var newTrie = compile(moreRoutes);
+		var newTrie = compileAll(moreRoutes);
 		currentTrie = currentTrie.merge(newTrie);
 	};
 
