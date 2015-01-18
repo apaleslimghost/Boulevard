@@ -115,7 +115,6 @@ var route_ = curry(function route_$(options, map) {
 	var trie = compileAll(map);
 	var currentTrie = trie;
 	function handle$(...args) {
-		var [req] = args;
 		return handleAndFold(
 			args,
 			addParams,
