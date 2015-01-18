@@ -64,6 +64,34 @@ route({
 });
 ```
 
+### Return values
+
+Values returned from route handlers control what Boulevard does next. If you return `false`, control passes to the next matched handler (if any) or the 404 handler. If you return a non-`false` value or `undefined`, it considers your handling finished, and doesn't call any more handlers. The value is returned by the router.
+
+### Routes with the same path
+
+If you need separate handlers at the same path (for example, a `GET` handler and a `POST` handler), you can pass in an array of maps or pairs instead of the the route map:
+
+```javascript
+route([
+	['/', function(req) {
+		if(req.method === 'GET') {
+			// ...
+		} else return false;
+	}],
+	['/', function(req) {
+		if(req.method === 'POST') {
+			// ...
+		} else return false;
+	}],
+	{'/': function(req) {
+		if(req.method === 'PUT') {
+			// ...
+		} else return false;
+	}}
+])
+```
+
 ### 404
 
 If no routes match, a 404 handler is called. The default handler works with `http.createServer`; it sets the `statusCode` to `404` and sends an empty response.
@@ -130,10 +158,6 @@ var myRoute = route.withGetUrl(function(req) {
 #### `route_`
 
 `route_` takes a hash of the above customisable functions as its first argument. Any not passed in is set to [the default](https://github.com/quarterto/Boulevard/blob/880aa2b5e3b60ba2227e764d4750b549e042f60c/src/index.js#L89-L106).
-
-### Return values
-
-Values returned from route handlers control what Boulevard does next. If you return `false` or `None`, control passes to the next matched handler (if any) or the 404 handler. If you return a `Some`, a non-`false` value, or `undefined`, it considers your handling finished, and doesn't call any more handlers. The value or the contents of the `Some` are returned from the router.
 
 Licence
 ---
