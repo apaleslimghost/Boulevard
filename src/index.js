@@ -5,6 +5,7 @@ var curry = require('curry');
 var Symbol = require('es6-symbol');
 var defaults = require('defaults');
 var pascalCase = require('pascal-case');
+var url = require('url');
 
 var {Some, None} = Option;
 var {Param, Branch} = ParamBranch;
@@ -85,15 +86,30 @@ function handleAndFold(args, addParams, results) {
 	return None;
 }
 
+function fourOhFour$(req, res) {
+	res.statusCode = 404;
+	res.end();
+}
+
+function addParams$(params, args) {
+	return args.concat(params);
+}
+
+function getUrl$(req) {
+	return url.parse(req.url).pathname;
+}
+
 var defaultFuncs = {
 	fourOhFour: fourOhFour$,
-	addParams:  addParams$
+	addParams:  addParams$,
+	getUrl:     getUrl$
 };
 
 var route_ = curry(function route_$(options, map) {
 	var {
 		fourOhFour,
-		addParams
+		addParams,
+		getUrl
 	} = defaults(options, defaultFuncs);
 
 	var trie = compileAll(map);
@@ -103,7 +119,7 @@ var route_ = curry(function route_$(options, map) {
 		return handleAndFold(
 			args,
 			addParams,
-			currentTrie.lookup(urlToPath(req.url))
+			currentTrie.lookup(urlToPath(getUrl(...args)))
 		).fold(
 			(a) => a,
 			()  => fourOhFour(...args)
@@ -117,16 +133,6 @@ var route_ = curry(function route_$(options, map) {
 
 	return handle$;
 });
-
-function fourOhFour$(req, res) {
-	res.statusCode = 404;
-	res.end();
-}
-
-function addParams$(params, args) {
-	return args.concat(params);
-}
-
 
 module.exports = route_({});
 
