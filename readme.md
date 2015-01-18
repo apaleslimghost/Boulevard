@@ -1,9 +1,14 @@
-<h1 align="center"><img src="https://raw.githubusercontent.com/quarterto/Boulevard/master/logo.png" width="400" alt="Boulevard"></h1>
+<h1 align="center">
+	<img src="https://raw.githubusercontent.com/quarterto/Boulevard/master/logo.png" width="400" alt="Boulevard"><br>
+	<a href="https://travis-ci.org/quarterto/Boulevard">
+		<img src="https://travis-ci.org/quarterto/Boulevard.svg" alt="Build status">
+	</a>
+</h1>
 
 Handler-agnostic URL router.
 
 ```
-npm instal boulevard
+npm install boulevard
 ```
 
 Usage
