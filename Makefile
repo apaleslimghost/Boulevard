@@ -9,3 +9,6 @@ all: $(LIB_FILES)
 lib/%.js: src/%.js
 	@mkdir -p $(@D)
 	6to5 -o $@ $<
+
+test: all
+	mocha -u exports --compilers js:6to5/register
