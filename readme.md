@@ -91,29 +91,40 @@ routes({url: '/bar'}) //⇒ 'baz'
 
 As well as the default router, `boulevard` exports functions that allow you to override various parts of default behaviour. They each take functions to override and return a version of the router with the new behaviour.
 
-#### Custom 404 handler (`with404`)
+#### Custom 404 handler (`withFourOhFour`)
+###### Alias `with404`
 Takes a handler of the same shape as your regular route handlers, which is called when none of the URLs match:
 
 ```javascript
-var myRoute = route.with404(function(req, res) {
+var myRoute = route.withFourOhFour(function(req, res) {
 	res.statusCode = 404;
 	res.end('Not found: ' + req.url);
 });
 ```
 
-#### Custom parameter munging (`withParamHandler`)
+#### Custom parameter munging (`withAddParams`)
+###### Alias `withParamHandler`
 Takes a function with arguments `params` (the parameters extracted from the URL) and `args` (the arguments passed to the original handler). Should return an array of arguments to pass to the matched handler.
 
 ```javascript
-var myRoute = route.withParamHandler(function(params, args) {
+var myRoute = route.withAddParams(function(params, args) {
 	args[0].params = params;
 	return args;
 });
 ```
 
-#### Both (`route_`)
+#### Custom URL gleaning (`withGetUrl`)
+Gets passed the arguments from the router, should return the URL to match against. By default, parses the url to strip off any query string.
 
-`route_` takes a parameter handler *and* a 404 handler and returns a router.
+```javascript
+var myRoute = route.withGetUrl(function(req) {
+	return req.url;
+});
+```
+
+#### `route_`
+
+`route_` takes a hash of the above customisable functions as its first argument. Any not passed in is set to [the default](https://github.com/quarterto/Boulevard/blob/880aa2b5e3b60ba2227e764d4750b549e042f60c/src/index.js#L89-L106).
 
 ### Return values
 
