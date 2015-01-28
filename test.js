@@ -88,9 +88,22 @@ exports.Boulevard = {
 			var r = myRoute({
 				'/'() {}
 			});
-			r({url: '/nope'});
+			var req = {url: '/nope'};
+			r(req, 'a', 'b');
 
-			expect(four).was.called();
+			expect(four).was.calledWith(req, 'a', 'b');
+		},
+
+		'getUrl'() {
+			var get = sinon.stub().returns('/');
+			var handler = sinon.spy();
+			var myRoute = route.withGetUrl(get);
+			var r = myRoute({
+				'/': handler
+			});
+			r('a', 'b');
+			expect(get).was.calledWith('a', 'b');
+			expect(handler).was.called();
 		}
 	}
 };
