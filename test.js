@@ -65,6 +65,32 @@ exports.Boulevard = {
 					quux: 'lorem'
 				});
 			},
+		},
+
+		'404'() {
+			var res = {end() {}};
+			sinon.spy(res, 'end');
+
+			var r = route({
+				'/'() {}
+			});
+			r({url: '/nope'}, res);
+
+			expect(res.end).was.called();
+			expect(res.statusCode).to.be(404);
+		}
+	},
+
+	'custom behaviour': {
+		'404'() {
+			var four = sinon.spy();
+			var myRoute = route.withFourOhFour(four);
+			var r = myRoute({
+				'/'() {}
+			});
+			r({url: '/nope'});
+
+			expect(four).was.called();
 		}
 	}
 };

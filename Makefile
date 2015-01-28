@@ -10,5 +10,7 @@ lib/%.js: src/%.js
 	@mkdir -p $(@D)
 	6to5 -o $@ $<
 
-test: all
+test: all test.js
 	mocha -u exports --compilers js:6to5/register
+
+.PHONY: test

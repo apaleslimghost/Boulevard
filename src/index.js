@@ -114,6 +114,7 @@ var route_ = curry(function route_$(options, map) {
 
 	var trie = compileAll(map);
 	var currentTrie = trie;
+
 	function handle$(...args) {
 		return handleAndFold(
 			args,
@@ -135,12 +136,12 @@ var route_ = curry(function route_$(options, map) {
 
 module.exports = route_({});
 
+var withFn = curry((prop, fn, map) => route_({
+	[prop]: fn
+}, map));
+
 for(var prop in defaultFuncs) {
-	module.exports['with' + pascalCase(prop)] = curry((fn, map) => {
-		return route_({
-			[prop]: fn
-		}, map);
-	});
+	module.exports['with' + pascalCase(prop)] = withFn(prop);
 }
 
 // 1.0 backwards compat
