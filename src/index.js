@@ -3,9 +3,9 @@ var μ = require('immutable');
 var Option = require('fantasy-options');
 var curry = require('curry');
 var Symbol = require('es6-symbol');
-var defaults = require('defaults');
 var pascalCase = require('pascal-case');
 var url = require('url');
+var jalfrezi = require('jalfrezi');
 
 var {Some, None} = Option;
 var {Param, Branch} = ParamBranch;
@@ -105,12 +105,12 @@ var defaultFuncs = {
 	getUrl:     getUrl$
 };
 
-var route_ = curry(function route_$(options, map) {
+var route_ = jalfrezi(defaultFuncs, function route_$(options, map) {
 	var {
 		fourOhFour,
 		addParams,
 		getUrl
-	} = defaults(options, defaultFuncs);
+	} = options;
 
 	var trie = compileAll(map);
 	var currentTrie = trie;
