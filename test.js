@@ -104,6 +104,20 @@ exports.Boulevard = {
 			r('a', 'b');
 			expect(get).was.calledWith('a', 'b');
 			expect(handler).was.called();
+		},
+
+		'addParams'() {
+			var add = sinon.stub().returns(['a', 'b']);
+			var myRoute = route.withAddParams(add);
+			var handler = sinon.spy();
+			var r = myRoute({
+				'/:bar': handler
+			});
+			var req = {url: '/foo'};
+			r(req, 'c', 'd');
+
+			expect(add).was.calledWith({bar: 'foo'}, [req, 'c', 'd']);
+			expect(handler).was.calledWith('a', 'b');
 		}
 	}
 };
