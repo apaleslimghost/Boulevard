@@ -1,9 +1,7 @@
 var {ParamTrie, ParamBranch} = require('param-trie');
 var μ = require('immutable');
 var Option = require('fantasy-options');
-var curry = require('curry');
 var Symbol = require('es6-symbol');
-var pascalCase = require('pascal-case');
 var url = require('url');
 var jalfrezi = require('jalfrezi');
 
@@ -105,7 +103,7 @@ var defaultFuncs = {
 	getUrl:     getUrl$
 };
 
-var route_ = jalfrezi(defaultFuncs, function route_$(options, map) {
+module.exports = jalfrezi(defaultFuncs, function route_$(options, map) {
 	var {
 		fourOhFour,
 		addParams,
@@ -134,18 +132,6 @@ var route_ = jalfrezi(defaultFuncs, function route_$(options, map) {
 	return handle$;
 });
 
-module.exports = route_({});
-
-var withFn = curry((prop, fn, map) => route_({
-	[prop]: fn
-}, map));
-
-for(var prop in defaultFuncs) {
-	module.exports['with' + pascalCase(prop)] = withFn(prop);
-}
-
 // 1.0 backwards compat
 module.exports.with404 = module.exports.withFourOhFour;
 module.exports.withParamHandler = module.exports.withAddParams;
-
-module.exports.route_ = route_;
