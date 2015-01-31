@@ -103,7 +103,7 @@ var defaultFuncs = {
 	getUrl:     getUrl$
 };
 
-module.exports = jalfrezi(defaultFuncs, function route_$(options, map) {
+module.exports = jalfrezi(defaultFuncs, function route(options, map) {
 	var {
 		fourOhFour,
 		addParams,

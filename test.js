@@ -118,6 +118,30 @@ exports.Boulevard = {
 
 			expect(add).was.calledWith({bar: 'foo'}, [req, 'c', 'd']);
 			expect(handler).was.calledWith('a', 'b');
+		},
+
+		'all at once'() {
+			var four = sinon.spy();
+			var add = sinon.stub().returns(['a', 'b']);
+			var handler = sinon.spy();
+
+			var r = route.route_({
+				fourOhFour: four,
+				addParams: add
+			}, {
+				'/foo/:bar': handler
+			});
+
+			var req = {url: '/nope'};
+			r(req, 'a', 'b');
+
+			expect(four).was.calledWith(req, 'a', 'b');
+
+			var req2 = {url: '/foo/bar'};
+			r(req2, 'c', 'd');
+
+			expect(add).was.calledWith({bar: 'bar'}, [req2, 'c', 'd']);
+			expect(handler).was.calledWith('a', 'b');
 		}
 	}
 };
