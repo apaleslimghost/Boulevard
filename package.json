@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/quarterto/Boulevard",
   "dependencies": {
+    "es6-iterator": "^0.1.2",
     "es6-symbol": "^0.1.1",
     "fantasy-options": "git://github.com/fantasyland/fantasy-options",
     "immutable": "^3.6.2",

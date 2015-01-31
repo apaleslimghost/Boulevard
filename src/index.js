@@ -4,25 +4,10 @@ var Option = require('fantasy-options');
 var Symbol = require('es6-symbol');
 var url = require('url');
 var jalfrezi = require('jalfrezi');
+var Iterator = require('es6-iterator');
 
 var {Some, None} = Option;
 var {Param, Branch} = ParamBranch;
-
-function arrayIter(arr) {
-	return {
-		[Symbol.iterator]() {
-			var i = 0;
-			return {
-				next() {
-					return {
-						done: i === arr.length,
-						value: arr[i++]
-					};
-				}
-			};
-		}
-	};
-}
 
 function urlToPath(url) {
 	return url.split('/').filter((p) => p.length > 0);
@@ -70,8 +55,8 @@ function resultToOption(result) {
 }
 
 function handleAndFold(args, addParams, results) {
-	for(let {value, params} of arrayIter(results)) {
-		for(let handler of arrayIter(value)) {
+	for(let {value, params} of Iterator(results)) {
+		for(let handler of Iterator(value)) {
 			let result = resultToOption(
 				handler(...addParams(params.toJSON(), args))
 			);
