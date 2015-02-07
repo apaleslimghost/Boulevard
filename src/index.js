@@ -25,11 +25,13 @@ var chain = (xs, f) => xs.reduce(
 	[]
 );
 
+var toPairsObj = (obj) => μ.Map(obj).entrySeq().toJS();
+
 var toPairsItem = (item) => Array.isArray(item)? [item]
-                          : /* otherwise */      μ.Map(item).entrySeq().toJS();
+                          : /* otherwise */      toPairsObj(item);
 
 var toPairs = (map) => Array.isArray(map)? chain(map, toPairsItem)
-                     : /* otherwise */     μ.Map(map).entrySeq().toJS();
+                     : /* otherwise */     toPairsObj(map);
 
 var groupPairsUniq = (pairs) => pairs.reduce(
 	(groups, [k, v]) => {
