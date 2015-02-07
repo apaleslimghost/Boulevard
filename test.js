@@ -153,6 +153,16 @@ exports.Boulevard = {
 			]);
 			r({url: '/'});
 			expect(handler).was.called();
+		},
+
+		'multiple routes at same path allows fallback'() {
+			var handler = sinon.spy();
+			var r = route([
+				['/', () => false],
+				['/', handler]
+			]);
+			r({url: '/'});
+			expect(handler).was.called();
 		}
 	}
 };
