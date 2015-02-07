@@ -25,7 +25,10 @@ var chain = (xs, f) => xs.reduce(
 	[]
 );
 
-var toPairs = (map) => Array.isArray(map)? chain(map, toPairs)
+var toPairsItem = (item) => Array.isArray(item)? [item]
+                          : /* otherwise */      μ.Map(item).entrySeq().toJS();
+
+var toPairs = (map) => Array.isArray(map)? chain(map, toPairsItem)
                      : /* otherwise */     μ.Map(map).entrySeq().toJS();
 
 var groupPairsUniq = (pairs) => pairs.reduce(

@@ -143,5 +143,16 @@ exports.Boulevard = {
 			expect(add).was.calledWith({bar: 'bar'}, [req2, 'c', 'd']);
 			expect(handler).was.calledWith('a', 'b');
 		}
+	},
+
+	'routes map': {
+		'can be an array of pairs'() {
+			var handler = sinon.spy();
+			var r = route([
+				['/', handler]
+			]);
+			r({url: '/'});
+			expect(handler).was.called();
+		}
 	}
 };
