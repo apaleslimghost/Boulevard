@@ -5,6 +5,8 @@ var expect = require('sinon-expect').enhance(
 	'was'
 );
 
+var {ParamBranch} = require('param-trie');
+var {Param, Branch} = ParamBranch;
 var route = require('./');
 
 exports.Boulevard = {
@@ -163,6 +165,36 @@ exports.Boulevard = {
 			]);
 			r({url: '/'});
 			expect(handler).was.called();
+		},
+
+		'supports uncompiled paths': {
+			'base'() {
+				var handler = sinon.spy();
+				var r = route([
+					[[], handler]
+				]);
+				r({url: '/'});
+				expect(handler).was.called();
+			},
+			'more'() {
+				var handler = sinon.spy();
+				var r = route([
+					[[Branch('foo')], handler]
+				]);
+				r({url: '/foo'});
+				expect(handler).was.called();
+			},
+			'param'() {
+				var handler = sinon.spy();
+				var r = route([
+					[[Param('foo')], handler]
+				]);
+				r({url: '/bar'});
+				expect(handler).was.called();
+				expect(handler.lastCall.args[1]).to.eql({
+					foo: 'bar'
+				});
+			}
 		}
 	}
 };

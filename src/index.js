@@ -14,6 +14,10 @@ function urlToPath(url) {
 }
 
 function toParamBranch(url) {
+	if(Array.isArray(url)) {
+		return url; // precompiled
+	}
+
 	return urlToPath(url).map(function(part) {
 		return part[0] === ':'? Param(part.slice(1))
 		     : /* otherwise */  Branch(part);
