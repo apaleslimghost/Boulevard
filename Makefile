@@ -8,9 +8,9 @@ all: $(LIB_FILES)
 
 lib/%.js: src/%.js
 	@mkdir -p $(@D)
-	6to5 -o $@ $<
+	babel -o $@ $<
 
 test: all test.js
-	mocha -u exports --compilers js:6to5/register
+	mocha -u exports --compilers js:babel/register
 
 .PHONY: test
