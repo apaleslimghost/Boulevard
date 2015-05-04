@@ -29,7 +29,7 @@
     "fantasy-options": "git://github.com/fantasyland/fantasy-options",
     "immutable": "^3.6.2",
     "jalfrezi": "^2.0.0",
-    "param-trie": "^1.0.0"
+    "param-trie": "^1.1.0"
   },
   "devDependencies": {
     "babel": "^5.2.9",

@@ -196,5 +196,74 @@ exports.Boulevard = {
 				});
 			}
 		}
+	},
+
+	'router methods': {
+		'add': {
+			'should add routes to the handler'() {
+				var foo = sinon.spy();
+				var bar = sinon.spy();
+				var r = route({
+					'/foo': foo
+				});
+				r.add({
+					'/bar': bar
+				});
+
+				r({url: '/bar'});
+				expect(bar).was.called();
+
+				r({url: '/foo'});
+				expect(foo).was.called();
+			}
+		},
+
+		'concat': {
+			'should join two routers'() {
+				var foo = sinon.spy();
+				var bar = sinon.spy();
+				var r = route({
+					'/foo': foo
+				});
+				var s = route({
+					'/bar': bar
+				});
+
+				var t = r.concat(s);
+
+				t({url: '/bar'});
+				expect(bar).was.called();
+
+				t({url: '/foo'});
+				expect(foo).was.called();
+			}
+		},
+
+		'use': {
+			'should add a router at a subpath'() {
+				var foo = sinon.spy();
+				var bar = sinon.spy();
+				var r = route({
+					'/foo': foo
+				});
+				var s = route({
+					'/bar': bar
+				});
+
+				var t = r.use('/baz', s);
+
+				t({url: '/bar'}, {end() {}});
+				expect(bar).was.notCalled();
+
+				t({url: '/baz/bar'});
+				expect(bar).was.called();
+
+				t({url: '/baz/bar'});
+				expect(bar).was.called();
+
+				t({url: '/foo'});
+				expect(foo).was.called();
+			}
+		}
 	}
 };

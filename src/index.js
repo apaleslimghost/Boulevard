@@ -97,14 +97,13 @@ var defaultFuncs = {
 	getUrl:     getUrl$
 };
 
-module.exports = jalfrezi(defaultFuncs, function route(options, map) {
+function createHandler(options, trie) {
 	var {
 		fourOhFour,
 		addParams,
 		getUrl
 	} = options;
 
-	var trie = compileAll(map);
 	var currentTrie = trie;
 
 	function handle$(...args) {
@@ -118,12 +117,32 @@ module.exports = jalfrezi(defaultFuncs, function route(options, map) {
 		);
 	}
 
+	handle$.routes = function() {
+		return currentTrie;
+	};
+
 	handle$.add = function(moreRoutes) {
 		var newTrie = compileAll(moreRoutes);
 		currentTrie = currentTrie.merge(newTrie);
 	};
 
+	handle$.concat = function(otherRouter) {
+		return concatRoutes(otherRouter.routes());
+	};
+
+	function concatRoutes(routes) {
+		return createHandler(options, currentTrie.merge(routes));
+	}
+
+	handle$.use = function(path, otherRouter) {
+		return concatRoutes(otherRouter.routes().indent(toParamBranch(path)));
+	};
+
 	return handle$;
+}
+
+module.exports = jalfrezi(defaultFuncs, function route(options, map) {
+	return createHandler(options, compileAll(map));
 });
 
 // 1.0 backwards compat
