@@ -8,7 +8,7 @@ all: $(LIB_FILES)
 
 lib/%.js: src/%.js
 	@mkdir -p $(@D)
-	babel -o $@ $<
+	babel --optional runtime -o $@ $<
 
 test: all test.js
 	mocha -u exports --compilers js:babel/register

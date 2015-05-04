@@ -4,7 +4,6 @@ var Option = require('fantasy-options');
 var Symbol = require('es6-symbol');
 var url = require('url');
 var jalfrezi = require('jalfrezi');
-var Iterator = require('es6-iterator');
 
 var {Some, None} = Option;
 var {Param, Branch} = ParamBranch;
@@ -64,8 +63,8 @@ function resultToOption(result) {
 }
 
 function handleAndFold(args, addParams, results) {
-	for(let {value, params} of Iterator(results)) {
-		for(let handler of Iterator(value)) {
+	for(let {value, params} of results) {
+		for(let handler of value) {
 			let result = resultToOption(
 				handler(...addParams(params.toJSON(), args))
 			);
