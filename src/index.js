@@ -1,7 +1,6 @@
 var {ParamTrie, ParamBranch} = require('param-trie');
 var μ = require('immutable');
 var Option = require('fantasy-options');
-var Symbol = require('es6-symbol');
 var url = require('url');
 var jalfrezi = require('jalfrezi');
 
