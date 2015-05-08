@@ -100,7 +100,49 @@ route([
 
 If no routes match, a 404 handler is called. The default handler works with `http.createServer`; it sets the `statusCode` to `404` and sends an empty response.
 
-### Adding routes post-facto
+### Combining routers
+#### `concat`
+Returns a new router combining the routes.
+
+```javascript
+var a = route({
+	'/foo': function() {
+		return 'foo';
+	}
+});
+
+var b = route({
+	'/bar': function() {
+		return 'bar';
+	}
+});
+
+var c = a.concat(b);
+c({url: '/bar'}) //⇒ 'bar'
+a({url: '/bar'}) //⇒ 404
+```
+
+#### `use`
+Return a new router with the routes of the given router available as a subpath.
+
+```javascript
+var a = route({
+	'/foo': function() {
+		return 'foo';
+	}
+});
+
+var b = route({
+	'/bar': function() {
+		return 'bar';
+	}
+});
+
+var c = a.use('quux', b);
+c({url: '/quux/bar'}) //⇒ 'bar'
+c({url: '/bar'}) //⇒ 404
+
+#### Adding routes post-facto
 
 The router function returned by Boulevard has an `add` method, which merges in a new map of routes:
 
@@ -123,6 +165,8 @@ routes.add({
 routes({url: '/'}) //⇒ 'foo'
 routes({url: '/bar'}) //⇒ 'baz'
 ```
+
+
 
 ### Overriding default behaviour
 
