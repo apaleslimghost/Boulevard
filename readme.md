@@ -141,6 +141,7 @@ var b = route({
 var c = a.use('quux', b);
 c({url: '/quux/bar'}) //⇒ 'bar'
 c({url: '/bar'}) //⇒ 404
+```
 
 #### Adding routes post-facto
 
