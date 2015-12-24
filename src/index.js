@@ -55,7 +55,7 @@ function compile(map) {
 }
 
 function resultToOption(result) {
-	return typeof result === 'undefined'? Some({})
+	return typeof result === 'undefined'? Some(undefined)
 	     : result instanceof Option?      result
 	     : result === false?              None
 	     : /* otherwise */                Some(result);
