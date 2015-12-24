@@ -4,7 +4,8 @@
   "description": "Handler-agnostic url routing",
   "main": "lib",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+		"prepublish": "make"
   },
   "repository": {
     "type": "git",
