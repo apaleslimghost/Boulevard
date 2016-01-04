@@ -5,7 +5,7 @@
   "main": "lib",
   "scripts": {
     "test": "make test",
-		"prepublish": "make"
+    "prepublish": "make"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/quarterto/Boulevard",
   "dependencies": {
     "babel-runtime": "^5.2.9",
-    "fantasy-options": "git://github.com/fantasyland/fantasy-options",
+    "fantasy-options": "github:fantasyland/fantasy-options#0b6667fa0210519fd3db5f921452227e922ec36a",
     "immutable": "^3.6.2",
     "jalfrezi": "^2.0.0",
     "param-trie": "^1.1.0"
