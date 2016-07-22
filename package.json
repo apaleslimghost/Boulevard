@@ -25,16 +25,19 @@
   },
   "homepage": "https://github.com/quarterto/Boulevard",
   "dependencies": {
-    "babel-runtime": "^5.2.9",
+    "babel-runtime": "^5.8.38",
     "fantasy-options": "github:fantasyland/fantasy-options#0b6667fa0210519fd3db5f921452227e922ec36a",
     "immutable": "^3.6.2",
     "jalfrezi": "^2.0.0",
     "param-trie": "^1.1.0"
   },
   "devDependencies": {
-    "babel": "^5.2.9",
+    "babel-cli": "^6.10.1",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
     "expect.js": "^0.3.1",
-    "mocha": "^2.1.0",
+    "mocha": "^2.5.3",
     "sinon": "^1.12.2",
     "sinon-expect": "^0.2.0"
   }
