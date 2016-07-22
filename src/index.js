@@ -139,9 +139,12 @@ function createHandler(options, trie) {
 	return handle$;
 }
 
-module.exports = jalfrezi(defaultFuncs, function route(options, map) {
+function route(options, map) {
 	return createHandler(options, compileAll(map));
-});
+}
+
+route.displayName = 'route';
+module.exports = jalfrezi(defaultFuncs, route);
 
 // 1.0 backwards compat
 module.exports.with404 = module.exports.withFourOhFour;
