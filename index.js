@@ -51,7 +51,7 @@ const trieRouter = trie => Object.assign(function(...args) {
 	},
 
 	add(path, fn) {
-		return trieRouter(this.trie.insertPath(path, fn));
+		return trieRouter(this.trie.insertPath(compilePath(path), fn));
 	}
 });
 
