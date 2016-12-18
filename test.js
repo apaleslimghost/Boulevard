@@ -7,7 +7,7 @@ var expect = require('sinon-expect').enhance(
 
 var {ParamBranch} = require('param-trie');
 var {Param, Branch} = ParamBranch;
-var route = require('./lib');
+var route = require('./');
 
 exports.Boulevard = {
 	'basic routing': {

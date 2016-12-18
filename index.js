@@ -1,11 +1,9 @@
-var {ParamTrie, ParamBranch} = require('param-trie');
-var μ = require('immutable');
-var Option = require('fantasy-options');
-var url = require('url');
-var jalfrezi = require('jalfrezi');
+const {ParamTrie, ParamBranch} = require('param-trie');
+const url = require('url');
+const jalfrezi = require('jalfrezi');
 
-var {Some, None} = Option;
-var {Param, Branch} = ParamBranch;
+const {Some, None} = Option;
+const {Param, Branch} = ParamBranch;
 
 function urlToPath(url) {
 	return url.split('/').filter((p) => p.length > 0);
@@ -22,22 +20,22 @@ function toParamBranch(url) {
 	});
 }
 
-var chain = (xs, f) => xs.reduce(
+const chain = (xs, f) => xs.reduce(
 	(ys, x) => ys.concat(f(x)),
 	[]
 );
 
-var toPairsObj = (obj) => μ.Map(obj).entrySeq().toJS();
+const toPairsObj = (obj) => μ.Map(obj).entrySeq().toJS();
 
-var toPairsItem = (item) => Array.isArray(item)? [item]
-                          : /* otherwise */      toPairsObj(item);
+const toPairsItem = (item) => Array.isArray(item)? [item]
+                            : /* otherwise */      toPairsObj(item);
 
-var toPairs = (map) => Array.isArray(map)? chain(map, toPairsItem)
-                     : /* otherwise */     toPairsObj(map);
+const toPairs = (map) => Array.isArray(map)? chain(map, toPairsItem)
+                       : /* otherwise */     toPairsObj(map);
 
-var groupPairsUniq = (pairs) => pairs.reduce(
+const groupPairsUniq = (pairs) => pairs.reduce(
 	(groups, [k, v]) => {
-		var i = groups.findIndex((m) => !m.has(k));
+		const i = groups.findIndex((m) => !m.has(k));
 		return groups.setIn([i >= 0 ? i : groups.size, k], v);
 	},
 	μ.List()
@@ -89,20 +87,20 @@ function getUrl$(req) {
 	return url.parse(req.url).pathname;
 }
 
-var defaultFuncs = {
+const defaultFuncs = {
 	fourOhFour: fourOhFour$,
 	addParams:  addParams$,
 	getUrl:     getUrl$
 };
 
 function createHandler(options, trie) {
-	var {
+	const {
 		fourOhFour,
 		addParams,
 		getUrl
 	} = options;
 
-	var currentTrie = trie;
+	const currentTrie = trie;
 
 	function handle$(...args) {
 		return handleAndFold(
@@ -120,7 +118,7 @@ function createHandler(options, trie) {
 	};
 
 	handle$.add = function(moreRoutes) {
-		var newTrie = compileAll(moreRoutes);
+		const newTrie = compileAll(moreRoutes);
 		currentTrie = currentTrie.merge(newTrie);
 	};
 
