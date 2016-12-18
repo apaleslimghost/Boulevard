@@ -25,13 +25,14 @@
   },
   "homepage": "https://github.com/quarterto/Boulevard",
   "dependencies": {
+    "@quarterto/middleware": "^1.7.0",
     "babel-runtime": "^5.8.38",
     "cuid": "^1.3.8",
     "eulalie": "^2.5.4",
     "fantasy-options": "github:fantasyland/fantasy-options#0b6667fa0210519fd3db5f921452227e922ec36a",
     "immutable": "^3.6.2",
     "jalfrezi": "^2.0.0",
-    "param-trie": "^1.1.0"
+    "param-trie": "^2.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",

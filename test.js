@@ -1,19 +1,18 @@
-var sinon = require('sinon');
-var expect = require('sinon-expect').enhance(
+const sinon = require('sinon');
+const expect = require('sinon-expect').enhance(
 	require('expect.js'),
 	sinon,
 	'was'
 );
 
-var {ParamBranch} = require('param-trie');
-var {Param, Branch} = ParamBranch;
-var route = require('./');
+const {param, branch} = require('param-trie');
+const route = require('./');
 
-exports.Boulevard = {
+exports.Bouleconstd = {
 	'basic routing': {
 		'calls handler on match'() {
-			var handler = sinon.spy();
-			var r = route({
+			const handler = sinon.spy();
+			const r = route({
 				'/': handler
 			});
 			r({url: '/'});
@@ -21,9 +20,9 @@ exports.Boulevard = {
 		},
 
 		'passes arguments to handler'() {
-			var handler = sinon.spy();
-			var req = {url: '/'};
-			var r = route({
+			const handler = sinon.spy();
+			const req = {url: '/'};
+			const r = route({
 				'/': handler
 			});
 			r(req, 'a', 'b');
@@ -31,7 +30,7 @@ exports.Boulevard = {
 		},
 
 		'returns handler return value'() {
-			var r = route({
+			const r = route({
 				'/': () => 'foo'
 			});
 			expect(r({url: '/'})).to.be('foo');
@@ -39,8 +38,8 @@ exports.Boulevard = {
 
 		'parameters': {
 			'matches'() {
-				var handler = sinon.spy();
-				var r = route({
+				const handler = sinon.spy();
+				const r = route({
 					'/:foo': handler
 				});
 				r({url: '/bar'});
@@ -48,8 +47,8 @@ exports.Boulevard = {
 			},
 
 			'matches complex paths'() {
-				var handler = sinon.spy();
-				var r = route({
+				const handler = sinon.spy();
+				const r = route({
 					'/:foo/bar/baz/:quux': handler
 				});
 				r({url: '/frob/bar/baz/lorem'});
@@ -57,8 +56,8 @@ exports.Boulevard = {
 			},
 
 			'sends matched parameters as last argument'() {
-				var handler = sinon.spy();
-				var r = route({
+				const handler = sinon.spy();
+				const r = route({
 					'/:foo/bar/baz/:quux': handler
 				});
 				r({url: '/frob/bar/baz/lorem'});
@@ -70,10 +69,10 @@ exports.Boulevard = {
 		},
 
 		'404'() {
-			var res = {end() {}};
+			const res = {end() {}};
 			sinon.spy(res, 'end');
 
-			var r = route({
+			const r = route({
 				'/'() {}
 			});
 			r({url: '/nope'}, res);
@@ -85,22 +84,22 @@ exports.Boulevard = {
 
 	'custom behaviour': {
 		'404'() {
-			var four = sinon.spy();
-			var myRoute = route.withFourOhFour(four);
-			var r = myRoute({
+			const four = sinon.spy();
+			const myRoute = route.withFourOhFour(four);
+			const r = myRoute({
 				'/'() {}
 			});
-			var req = {url: '/nope'};
+			const req = {url: '/nope'};
 			r(req, 'a', 'b');
 
 			expect(four).was.calledWith(req, 'a', 'b');
 		},
 
 		'getUrl'() {
-			var get = sinon.stub().returns('/');
-			var handler = sinon.spy();
-			var myRoute = route.withGetUrl(get);
-			var r = myRoute({
+			const get = sinon.stub().returns('/');
+			const handler = sinon.spy();
+			const myRoute = route.withGetUrl(get);
+			const r = myRoute({
 				'/': handler
 			});
 			r('a', 'b');
@@ -109,13 +108,13 @@ exports.Boulevard = {
 		},
 
 		'addParams'() {
-			var add = sinon.stub().returns(['a', 'b']);
-			var myRoute = route.withAddParams(add);
-			var handler = sinon.spy();
-			var r = myRoute({
+			const add = sinon.stub().returns(['a', 'b']);
+			const myRoute = route.withAddParams(add);
+			const handler = sinon.spy();
+			const r = myRoute({
 				'/:bar': handler
 			});
-			var req = {url: '/foo'};
+			const req = {url: '/foo'};
 			r(req, 'c', 'd');
 
 			expect(add).was.calledWith({bar: 'foo'}, [req, 'c', 'd']);
@@ -123,23 +122,23 @@ exports.Boulevard = {
 		},
 
 		'all at once'() {
-			var four = sinon.spy();
-			var add = sinon.stub().returns(['a', 'b']);
-			var handler = sinon.spy();
+			const four = sinon.spy();
+			const add = sinon.stub().returns(['a', 'b']);
+			const handler = sinon.spy();
 
-			var r = route.route_({
+			const r = route.route_({
 				fourOhFour: four,
 				addParams: add
 			}, {
 				'/foo/:bar': handler
 			});
 
-			var req = {url: '/nope'};
+			const req = {url: '/nope'};
 			r(req, 'a', 'b');
 
 			expect(four).was.calledWith(req, 'a', 'b');
 
-			var req2 = {url: '/foo/bar'};
+			const req2 = {url: '/foo/bar'};
 			r(req2, 'c', 'd');
 
 			expect(add).was.calledWith({bar: 'bar'}, [req2, 'c', 'd']);
@@ -149,8 +148,8 @@ exports.Boulevard = {
 
 	'routes map': {
 		'can be an array of pairs'() {
-			var handler = sinon.spy();
-			var r = route([
+			const handler = sinon.spy();
+			const r = route([
 				['/', handler]
 			]);
 			r({url: '/'});
@@ -158,8 +157,8 @@ exports.Boulevard = {
 		},
 
 		'multiple routes at same path allows fallback'() {
-			var handler = sinon.spy();
-			var r = route([
+			const handler = sinon.spy();
+			const r = route([
 				['/', () => false],
 				['/', handler]
 			]);
@@ -169,25 +168,25 @@ exports.Boulevard = {
 
 		'supports uncompiled paths': {
 			'base'() {
-				var handler = sinon.spy();
-				var r = route([
+				const handler = sinon.spy();
+				const r = route([
 					[[], handler]
 				]);
 				r({url: '/'});
 				expect(handler).was.called();
 			},
 			'more'() {
-				var handler = sinon.spy();
-				var r = route([
-					[[Branch('foo')], handler]
+				const handler = sinon.spy();
+				const r = route([
+					[[branch('foo')], handler]
 				]);
 				r({url: '/foo'});
 				expect(handler).was.called();
 			},
 			'param'() {
-				var handler = sinon.spy();
-				var r = route([
-					[[Param('foo')], handler]
+				const handler = sinon.spy();
+				const r = route([
+					[[param('foo')], handler]
 				]);
 				r({url: '/bar'});
 				expect(handler).was.called();
@@ -201,9 +200,9 @@ exports.Boulevard = {
 	'router methods': {
 		'add': {
 			'should add routes to the handler'() {
-				var foo = sinon.spy();
-				var bar = sinon.spy();
-				var r = route({
+				const foo = sinon.spy();
+				const bar = sinon.spy();
+				const r = route({
 					'/foo': foo
 				});
 				r.add({
@@ -220,16 +219,16 @@ exports.Boulevard = {
 
 		'concat': {
 			'should join two routers'() {
-				var foo = sinon.spy();
-				var bar = sinon.spy();
-				var r = route({
+				const foo = sinon.spy();
+				const bar = sinon.spy();
+				const r = route({
 					'/foo': foo
 				});
-				var s = route({
+				const s = route({
 					'/bar': bar
 				});
 
-				var t = r.concat(s);
+				const t = r.concat(s);
 
 				t({url: '/bar'});
 				expect(bar).was.called();
@@ -241,16 +240,16 @@ exports.Boulevard = {
 
 		'use': {
 			'should add a router at a subpath'() {
-				var foo = sinon.spy();
-				var bar = sinon.spy();
-				var r = route({
+				const foo = sinon.spy();
+				const bar = sinon.spy();
+				const r = route({
 					'/foo': foo
 				});
-				var s = route({
+				const s = route({
 					'/bar': bar
 				});
 
-				var t = r.use('/baz', s);
+				const t = r.use('/baz', s);
 
 				t({url: '/bar'}, {end() {}});
 				expect(bar).was.notCalled();

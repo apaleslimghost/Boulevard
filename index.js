@@ -1,149 +1,64 @@
-const {ParamTrie, ParamBranch} = require('param-trie');
-const url = require('url');
-const jalfrezi = require('jalfrezi');
+const ParamTrie = require('param-trie');
+const {middleware} = require('@quarterto/middleware');
+const {param, branch} = ParamTrie;
 
-const {Some, None} = Option;
-const {Param, Branch} = ParamBranch;
+const nextRouteSymbol = Symbol.for('boulevard-next-route');
+const contextSymbol = Symbol.for('boulevard-context');
 
-function urlToPath(url) {
-	return url.split('/').filter((p) => p.length > 0);
-}
+exports.nextRoute = nextRouteSymbol;
 
-function toParamBranch(url) {
-	if(Array.isArray(url)) {
-		return url; // precompiled
-	}
+const splitPath = path => path.split('/').filter(part => part.length)
 
-	return urlToPath(url).map(function(part) {
-		return part[0] === ':'? Param(part.slice(1))
-		     : /* otherwise */  Branch(part);
-	});
-}
+const compilePath = path => splitPath(path).map(part =>
+	  part.startsWith(':') ? param(part.slice(1))
+	: branch(part));
 
-const chain = (xs, f) => xs.reduce(
-	(ys, x) => ys.concat(f(x)),
-	[]
+const compileAll = routes => Object.keys(routes).reduce(
+	(map, path) => map.set(compilePath(path), routes[path]),
+	new Map()
 );
 
-const toPairsObj = (obj) => μ.Map(obj).entrySeq().toJS();
+const getPath = ({url}) => url;
+const addParams = (args, params) => args.concat([params]);
+const fourOhFour = ({url}) => { throw new Error(`${url} not found`) };
 
-const toPairsItem = (item) => Array.isArray(item)? [item]
-                            : /* otherwise */      toPairsObj(item);
-
-const toPairs = (map) => Array.isArray(map)? chain(map, toPairsItem)
-                       : /* otherwise */     toPairsObj(map);
-
-const groupPairsUniq = (pairs) => pairs.reduce(
-	(groups, [k, v]) => {
-		const i = groups.findIndex((m) => !m.has(k));
-		return groups.setIn([i >= 0 ? i : groups.size, k], v);
-	},
-	μ.List()
-);
-
-function compileAll(maps) {
-	return groupPairsUniq(toPairs(maps)).map(compile).reduce(
-		(a, b) => a.merge(b),
-		ParamTrie.empty()
+const trieRouter = trie => Object.assign(function(...args) {
+	const path = splitPath(getPath(...args));
+	const resolvedRoutes = trie.lookup(path).map(
+		({value, params}) => (...args) => value(...addParams(args, params))
 	);
-}
 
-function compile(map) {
-	return ParamTrie.fromMap(map.mapKeys(toParamBranch));
-}
+	if(resolvedRoutes.length === 0) return fourOhFour(...args);
 
-function resultToOption(result) {
-	return typeof result === 'undefined'? Some(undefined)
-	     : result instanceof Option?      result
-	     : result === false?              None
-	     : /* otherwise */                Some(result);
-}
+	return middleware(resolvedRoutes, {
+		nextSymbol: nextRouteSymbol,
+		nextSymbols: [nextRouteSymbol],
+		contextSymbol,
+	}).apply(this, args);
+}, {trie});
 
-function handleAndFold(args, addParams, results) {
-	for(let {value, params} of results) {
-		for(let handler of value) {
-			let result = resultToOption(
-				handler(...addParams(params.toJSON(), args))
-			);
-
-			if(result instanceof Some) {
-				return result;
-			}
-		}
-	}
-	return None;
-}
-
-function fourOhFour$(req, res) {
-	res.statusCode = 404;
-	res.end();
-}
-
-function addParams$(params, args) {
-	return args.concat(params);
-}
-
-function getUrl$(req) {
-	return url.parse(req.url).pathname;
-}
-
-const defaultFuncs = {
-	fourOhFour: fourOhFour$,
-	addParams:  addParams$,
-	getUrl:     getUrl$
+const trieMethod = f => function (router) {
+	return trieRouter(f(this.trie, router.trie));
 };
 
-function createHandler(options, trie) {
-	const {
-		fourOhFour,
-		addParams,
-		getUrl
-	} = options;
+const methods = {
+	use(path, router) {
+		if(typeof path === 'function') {
+			return this.merge(router);
+		}
 
-	const currentTrie = trie;
+		return this.add(path, router.trie);
+	},
 
-	function handle$(...args) {
-		return handleAndFold(
-			args,
-			addParams,
-			currentTrie.lookup(urlToPath(getUrl(...args)))
-		).fold(
-			(a) => a,
-			()  => fourOhFour(...args)
-		);
+	merge(other) {
+		return trieRouter(this.trie.merge(router.trie));
+	},
+
+	add(path, fn) {
+		return trieRouter(this.trie.insertPath(path, fn));
 	}
-
-	handle$.routes = function() {
-		return currentTrie;
-	};
-
-	handle$.add = function(moreRoutes) {
-		const newTrie = compileAll(moreRoutes);
-		currentTrie = currentTrie.merge(newTrie);
-	};
-
-	handle$.concat = function(otherRouter) {
-		return concatRoutes(otherRouter.routes());
-	};
-
-	function concatRoutes(routes) {
-		return createHandler(options, currentTrie.merge(routes));
-	}
-
-	handle$.use = function(path, otherRouter) {
-		return concatRoutes(otherRouter.routes().indent(toParamBranch(path)));
-	};
-
-	return handle$;
 }
 
-function route(options, map) {
-	return createHandler(options, compileAll(map));
-}
+const route = routes => trieRouter(ParamTrie.fromMap(compileAll(routes)));
 
-route.displayName = 'route';
-module.exports = jalfrezi(defaultFuncs, route);
-
-// 1.0 backwards compat
-module.exports.with404 = module.exports.withFourOhFour;
-module.exports.withParamHandler = module.exports.withAddParams;
+module.exports = route;
