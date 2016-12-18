@@ -35,13 +35,9 @@ const trieRouter = trie => Object.assign(function(...args) {
 		nextSymbols: [nextRouteSymbol],
 		contextSymbol,
 	}).apply(this, args);
-}, {trie});
+}, {
+	trie,
 
-const trieMethod = f => function (router) {
-	return trieRouter(f(this.trie, router.trie));
-};
-
-const methods = {
 	use(path, router) {
 		if(typeof path === 'function') {
 			return this.merge(router);
@@ -57,8 +53,6 @@ const methods = {
 	add(path, fn) {
 		return trieRouter(this.trie.insertPath(path, fn));
 	}
-}
+});
 
-const route = routes => trieRouter(ParamTrie.fromMap(compileAll(routes)));
-
-module.exports = route;
+module.exports = routes => trieRouter(ParamTrie.fromMap(compileAll(routes)));
