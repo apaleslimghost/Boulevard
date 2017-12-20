@@ -1,6 +1,5 @@
 <h1 align="center">
 	<img src="https://raw.githubusercontent.com/quarterto/Boulevard/master/logo.png" width="400" alt="Boulevard"><br>
-
 	<a href="http://badge.fury.io/js/boulevard">
 		<img src="https://badge.fury.io/js/boulevard.svg" alt="npm version">
 	</a>
