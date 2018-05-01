@@ -8,7 +8,7 @@ const expect = require('sinon-expect').enhance(
 const {param, branch} = require('param-trie');
 const route = require('./');
 
-exports.Bouleconstd = {
+exports.Boulevard = {
 	'basic routing': {
 		'calls handler on match'() {
 			const handler = sinon.spy();
